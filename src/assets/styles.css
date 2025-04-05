@@ -1,0 +1,58 @@
+/* Global styles */
+#root {
+   width: 100%;
+   height: 100vh;
+ }
+
+body {
+   margin: 0;
+   min-width: 320px;
+   min-height: 100vh;
+ }
+ 
+ button {
+   border-radius: 8px;
+   border: 2px solid transparent;
+   padding: 0.6em 1.2em;
+   font-size: 1em;
+   font-weight: 500;
+   font-family: inherit;
+   color: #fff;
+   background-color: #1a1a1a;
+   cursor: pointer;
+   transition: border-color 0.25s;
+ }
+ button:hover {
+   color: black;
+   background-color: #fff;
+   border-color: #1a1a1a;
+ }
+ 
+ /* Landing page styles */
+ .landing {
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   justify-content: center;
+   height: 100vh;
+   font-family: Arial, sans-serif;
+ }
+ 
+ /* Editor page styles */
+.app-container {
+   display: flex;
+   height: 100vh;
+   overflow: hidden;
+}
+ .toolbar {
+   width: 100px;
+   background-color: #f0f0f0;
+ }
+ .canvas {
+   flex-grow: 1;
+   background-color: #e0e0e0;
+ }
+ .properties {
+   width: 200px;
+   background-color: #f0f0f0;
+ }
