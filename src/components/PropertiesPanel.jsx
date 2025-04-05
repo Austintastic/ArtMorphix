@@ -1,28 +1,36 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-function PropertiesPanel({ onUpdate }) {
-  const [stroke, setStroke] = useState('#000000');
-  const [fill, setFill] = useState('none');
-  const [strokeWidth, setStrokeWidth] = useState(1);
-
-  const handleChange = () => {
-    onUpdate({ stroke, fill, strokeWidth });
+function PropertiesPanel({ onUpdate, selected, artboardSize, setArtboardSize }) {
+  const handleSizeChange = (e) => {
+    const { name, value } = e.target;
+    setArtboardSize((prev) => ({ ...prev, [name]: parseInt(value) }));
   };
 
   return (
     <div>
-      <label>
-        Stroke:
-        <input type="color" value={stroke} onChange={(e) => { setStroke(e.target.value); handleChange(); }} />
-      </label>
-      <label>
-        Fill:
-        <input type="color" value={fill} onChange={(e) => { setFill(e.target.value); handleChange(); }} />
-      </label>
-      <label>
-        Stroke Width:
-        <input type="number" value={strokeWidth} onChange={(e) => { setStrokeWidth(e.target.value); handleChange(); }} />
-      </label>
+      {selected === 'artspace' ? (
+        <div>
+          <h3>ArtBoard</h3>
+          <label>
+            Width:
+            <input
+              type="number"
+              name="width"
+              value={artboardSize.width}
+              onChange={handleSizeChange}
+            />
+          </label>
+          <label>
+            Height:
+            <input
+              type="number"
+              name="height"
+              value={artboardSize.height}
+              onChange={handleSizeChange}
+            />
+          </label>
+        </div>
+      ) : null}
     </div>
   );
 }
