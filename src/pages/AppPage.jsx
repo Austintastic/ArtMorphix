@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import Toolbar from '../components/Toolbar.jsx';
+import ArtSpace from '../components/ArtSpace.jsx';
 import PropertiesPanel from '../components/PropertiesPanel.jsx';
 import '../assets/styles.css';
 
@@ -12,23 +13,32 @@ function AppPage() {
     setSelected((prev) => (prev === 'artspace' ? null : 'artspace'));
   };
 
+  const handleZoomIn = () => {
+    // Optional: Add any logic needed when zooming in
+  };
+
+  const handleZoomOut = () => {
+    // Optional: Add any logic needed when zooming out
+  };
+
   return (
     <div className="app-container">
-      <Toolbar onSelectArtSpace={handleSelectArtSpace} selected={selected} />
-      <div className="artspace">
-        <svg className="artboard" width={artboardSize.width} height={artboardSize.height}>
-          <rect
-            x="0"
-            y="0"
-            width={artboardSize.width}
-            height={artboardSize.height}
-            fill="white"
-            stroke="black"
-            strokeWidth="2"
-          />
-        </svg>
+      <div className="toolbar-wrap">
+        <Toolbar
+          onSelectArtSpace={handleSelectArtSpace}
+          selected={selected}
+          onZoomIn={handleZoomIn}
+          onZoomOut={handleZoomOut}
+        />
       </div>
-      <div className="properties">
+      <div className="artspace-wrap">
+        <ArtSpace
+          artboardSize={artboardSize}
+          onZoomIn={handleZoomIn}
+          onZoomOut={handleZoomOut}
+        />
+      </div>
+      <div className="properties-wrap">
         <PropertiesPanel
           onUpdate={setStyles}
           selected={selected}
