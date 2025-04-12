@@ -1,11 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../assets/styles.css';
 
-function ArtSpace({ artboardSize, onZoomIn, onZoomOut }) {
+function ArtSpace({ artboardSize, zoom, setZoom, onZoomIn, onZoomOut }) {
   const [pan, setPan] = useState({ x: 0, y: 0 });
-  const [zoom, setZoom] = useState(1);
   const [isDragging, setIsDragging] = useState(false);
   const [startPos, setStartPos] = useState({ x: 0, y: 0 });
+
+  useEffect(() => {
+    if (zoom === 1) {
+      setPan({ x: 0, y: 0 });
+    }
+  }, [zoom]);
 
   const handleMouseDown = (e) => {
     setIsDragging(true);
@@ -32,16 +37,6 @@ function ArtSpace({ artboardSize, onZoomIn, onZoomOut }) {
     if (newZoom >= 0.2 && newZoom <= 5) {
       setZoom(newZoom);
     }
-  };
-
-  const handleZoomInInternal = () => {
-    setZoom((prev) => Math.min(prev + 0.1, 5));
-    if (onZoomIn) onZoomIn();
-  };
-
-  const handleZoomOutInternal = () => {
-    setZoom((prev) => Math.max(prev - 0.1, 0.2));
-    if (onZoomOut) onZoomOut();
   };
 
   return (

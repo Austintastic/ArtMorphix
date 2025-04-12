@@ -8,17 +8,22 @@ function AppPage() {
   const [styles, setStyles] = useState({ stroke: '#000000', fill: 'none', strokeWidth: 1 });
   const [artboardSize, setArtboardSize] = useState({ width: 800, height: 600 });
   const [selected, setSelected] = useState(null);
+  const [zoom, setZoom] = useState(1);
 
   const handleSelectArtSpace = () => {
     setSelected((prev) => (prev === 'artspace' ? null : 'artspace'));
   };
 
   const handleZoomIn = () => {
-    // Optional: Add any logic needed when zooming in
+    setZoom(prev => Math.min(prev + 0.1, 5));
   };
 
   const handleZoomOut = () => {
-    // Optional: Add any logic needed when zooming out
+    setZoom(prev => Math.max(prev - 0.1, 0.2));
+  };
+
+  const handleFitToView = () => {
+    setZoom(1); // Reset zoom to default
   };
 
   return (
@@ -29,11 +34,14 @@ function AppPage() {
           selected={selected}
           onZoomIn={handleZoomIn}
           onZoomOut={handleZoomOut}
+          onFitToView={handleFitToView}
         />
       </div>
       <div className="artspace-wrap">
         <ArtSpace
           artboardSize={artboardSize}
+          zoom={zoom}
+          setZoom={setZoom}
           onZoomIn={handleZoomIn}
           onZoomOut={handleZoomOut}
         />
