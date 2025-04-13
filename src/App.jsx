@@ -6,7 +6,7 @@ import AppPage from './pages/AppPage';
 
 function App() {
   return (
-    <Router>
+    <Router basename="/ArtMorphix">
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/app" element={<AppPage />} />
