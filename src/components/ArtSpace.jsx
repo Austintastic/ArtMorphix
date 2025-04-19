@@ -4,6 +4,57 @@ import '../assets/styles.css';
 const ArtSpace = forwardRef(({ artboardSize, zoom, setZoom, onZoomIn, onZoomOut, onFitToView }, ref) => {
   const containerRef = useRef(null);
   const [pan, setPan] = useState({ x: 0, y: 0 });
+  const [isSpacePressed, setIsSpacePressed] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
+  const [startPos, setStartPos] = useState({ x: 0, y: 0 });
+
+  // Handle spacebar press/release
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.code === 'Space' && !isSpacePressed) {
+        e.preventDefault(); // Prevent page scroll
+        setIsSpacePressed(true);
+      }
+    };
+
+    const handleKeyUp = (e) => {
+      if (e.code === 'Space') {
+        setIsSpacePressed(false);
+        setIsDragging(false);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('keyup', handleKeyUp);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('keyup', handleKeyUp);
+    };
+  }, [isSpacePressed]);
+
+  // Handle mouse events for panning
+  const handleMouseDown = (e) => {
+    if (isSpacePressed) {
+      setIsDragging(true);
+      setStartPos({ x: e.clientX - pan.x, y: e.clientY - pan.y });
+    }
+  };
+
+  const handleMouseMove = (e) => {
+    if (isDragging && isSpacePressed) {
+      setPan({
+        x: e.clientX - startPos.x,
+        y: e.clientY - startPos.y
+      });
+    }
+  };
+
+  const handleMouseUp = () => {
+    if (isDragging) {
+      setIsDragging(false);
+    }
+  };
 
   const calculateCenter = () => {
     if (!containerRef.current) return { x: 0, y: 0 };
@@ -118,6 +169,11 @@ const ArtSpace = forwardRef(({ artboardSize, zoom, setZoom, onZoomIn, onZoomOut,
     <div 
       ref={containerRef}
       className="artspace"
+      onMouseDown={handleMouseDown}
+      onMouseMove={handleMouseMove}
+      onMouseUp={handleMouseUp}
+      onMouseLeave={handleMouseUp}
+      style={{ cursor: isSpacePressed ? 'grab' : 'default' }}
     >
       <svg
         className="artboard"
