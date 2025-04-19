@@ -1,8 +1,9 @@
-import React, { useEffect, useRef, forwardRef, useImperativeHandle } from 'react';
+import React, { useState, useEffect, useRef, forwardRef, useImperativeHandle } from 'react';
 import '../assets/styles.css';
 
 const ArtSpace = forwardRef(({ artboardSize, zoom, setZoom, onZoomIn, onZoomOut, onFitToView }, ref) => {
   const containerRef = useRef(null);
+  const [pan, setPan] = useState({ x: 0, y: 0 });
 
   const calculateCenter = () => {
     if (!containerRef.current) return { x: 0, y: 0 };
@@ -30,7 +31,12 @@ const ArtSpace = forwardRef(({ artboardSize, zoom, setZoom, onZoomIn, onZoomOut,
     const heightRatio = (containerHeight - 40) / artboardSize.height;
     
     // Use the smaller ratio to ensure the artboard fits in both dimensions
-    return Math.min(widthRatio, heightRatio);
+    const newZoom = Math.min(widthRatio, heightRatio);
+    
+    // Reset pan when fitting to view
+    setPan({ x: 0, y: 0 });
+    
+    return newZoom;
   };
 
   useImperativeHandle(ref, () => ({
@@ -66,6 +72,44 @@ const ArtSpace = forwardRef(({ artboardSize, zoom, setZoom, onZoomIn, onZoomOut,
     };
   }, [zoom, setZoom, onFitToView]);
 
+  // Scroll handler for panning
+  const handleScroll = (e) => {
+    // Only handle scroll if it originated in our container
+    if (!containerRef.current?.contains(e.target)) {
+      return;
+    }
+    
+    // Prevent the scroll from affecting the page
+    e.preventDefault();
+    e.stopPropagation();
+    
+    // Get scroll deltas
+    const deltaX = e.deltaX;
+    const deltaY = e.deltaY;
+    
+    // Update pan position based on scroll
+    setPan(prev => ({
+      x: prev.x - deltaX,
+      y: prev.y - deltaY
+    }));
+  };
+
+  // Add global wheel event listener
+  useEffect(() => {
+    // Using passive: false to allow preventDefault()
+    const options = { passive: false };
+    
+    // Add wheel event listener to the container
+    const container = containerRef.current;
+    if (container) {
+      container.addEventListener('wheel', handleScroll, options);
+      
+      return () => {
+        container.removeEventListener('wheel', handleScroll, options);
+      };
+    }
+  }, []);
+
   return (
     <div 
       ref={containerRef}
@@ -76,7 +120,7 @@ const ArtSpace = forwardRef(({ artboardSize, zoom, setZoom, onZoomIn, onZoomOut,
         width={artboardSize.width}
         height={artboardSize.height}
         style={{
-          transform: `translate(-50%, -50%) scale(${zoom})`,
+          transform: `translate(calc(-50% + ${pan.x}px), calc(-50% + ${pan.y}px)) scale(${zoom})`,
           transformOrigin: 'center'
         }}
       />
