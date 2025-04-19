@@ -7,9 +7,6 @@ function Toolbar({ onSelectArtSpace, selected, onZoomIn, onZoomOut, onFitToView 
         className={selected === 'artspace' ? 'active' : ''}
         onClick={onSelectArtSpace}
       >ArtBoard</button>
-      <button onClick={onZoomIn}>Zoom In</button>
-      <button onClick={onZoomOut}>Zoom Out</button>
-      <button onClick={onFitToView}>Fit to View</button>
     </div>
   );
 }

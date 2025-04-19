@@ -39,6 +39,7 @@ function AppPage() {
           onZoomIn={handleZoomIn}
           onZoomOut={handleZoomOut}
           onFitToView={handleFitToView}
+          zoom={zoom}
         />
       </div>
       <div className="artspace-wrap">
@@ -58,6 +59,10 @@ function AppPage() {
           selected={selected}
           artboardSize={artboardSize}
           setArtboardSize={setArtboardSize}
+          zoom={zoom}
+          onZoomIn={handleZoomIn}
+          onZoomOut={handleZoomOut}
+          onFitToView={handleFitToView}
         />
       </div>
     </div>
