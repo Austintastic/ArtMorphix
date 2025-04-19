@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import Toolbar from '../components/Toolbar.jsx';
 import ArtSpace from '../components/ArtSpace.jsx';
 import PropertiesPanel from '../components/PropertiesPanel.jsx';
@@ -9,6 +9,7 @@ function AppPage() {
   const [artboardSize, setArtboardSize] = useState({ width: 800, height: 600 });
   const [selected, setSelected] = useState(null);
   const [zoom, setZoom] = useState(1);
+  const artSpaceRef = useRef(null);
 
   const handleSelectArtSpace = () => {
     setSelected((prev) => (prev === 'artspace' ? null : 'artspace'));
@@ -23,7 +24,10 @@ function AppPage() {
   };
 
   const handleFitToView = () => {
-    setZoom(1); // Reset zoom to default
+    if (artSpaceRef.current?.calculateFitToViewZoom) {
+      const newZoom = artSpaceRef.current.calculateFitToViewZoom();
+      setZoom(newZoom);
+    }
   };
 
   return (
@@ -39,11 +43,13 @@ function AppPage() {
       </div>
       <div className="artspace-wrap">
         <ArtSpace
+          ref={artSpaceRef}
           artboardSize={artboardSize}
           zoom={zoom}
           setZoom={setZoom}
           onZoomIn={handleZoomIn}
           onZoomOut={handleZoomOut}
+          onFitToView={handleFitToView}
         />
       </div>
       <div className="properties-wrap">

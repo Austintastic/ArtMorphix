@@ -85,12 +85,20 @@ body {
       width: 100%;
       height: 100%;
       background-color: #e0e0e0; /* Ensure background covers ghosted areas */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
     }
     .artboard {
       background-color: white;
       border: black solid 1px;
       box-shadow: 0 0 10px darkgray;
       will-change: transform; /* Optimize for panning and zooming */
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform-origin: center;
     }
 
     .properties-wrap {
