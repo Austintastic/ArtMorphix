@@ -34,12 +34,12 @@ function PropertiesPanel({ onUpdate, selected, artboardSize, setArtboardSize, zo
         ) : null}
       </div>
       <div className="zoom-controls">
+      <button onClick={onFitToView} className="fit-button">FIT</button>
         <div className="zoom-level-control">
           <button onClick={onZoomOut} className="zoom-button">−</button>
           <div className="zoom-level">{(zoom * 100).toFixed(0)}%</div>
           <button onClick={onZoomIn} className="zoom-button">+</button>
         </div>
-        <button onClick={onFitToView} className="fit-button">FIT</button>
       </div>
     </div>
   );

@@ -72,7 +72,7 @@ const ArtSpace = forwardRef(({ artboardSize, zoom, setZoom, onZoomIn, onZoomOut,
     };
   }, [zoom, setZoom, onFitToView]);
 
-  // Scroll handler for panning
+  // Scroll handler for panning and zooming
   const handleScroll = (e) => {
     // Only handle scroll if it originated in our container
     if (!containerRef.current?.contains(e.target)) {
@@ -83,23 +83,27 @@ const ArtSpace = forwardRef(({ artboardSize, zoom, setZoom, onZoomIn, onZoomOut,
     e.preventDefault();
     e.stopPropagation();
     
-    // Get scroll deltas
-    const deltaX = e.deltaX;
-    const deltaY = e.deltaY;
-    
-    // Update pan position based on scroll
-    setPan(prev => ({
-      x: prev.x - deltaX,
-      y: prev.y - deltaY
-    }));
+    if (e.metaKey) {
+      // Zoom with Command + scroll
+      const zoomDelta = -e.deltaY * 0.001; // Adjust this multiplier to control zoom sensitivity
+      const newZoom = Math.max(0.2, Math.min(5, zoom + zoomDelta));
+      setZoom(newZoom);
+    } else {
+      // Regular panning without Command key
+      const deltaX = e.deltaX;
+      const deltaY = e.deltaY;
+      
+      setPan(prev => ({
+        x: prev.x - deltaX,
+        y: prev.y - deltaY
+      }));
+    }
   };
 
   // Add global wheel event listener
   useEffect(() => {
-    // Using passive: false to allow preventDefault()
     const options = { passive: false };
     
-    // Add wheel event listener to the container
     const container = containerRef.current;
     if (container) {
       container.addEventListener('wheel', handleScroll, options);
@@ -108,7 +112,7 @@ const ArtSpace = forwardRef(({ artboardSize, zoom, setZoom, onZoomIn, onZoomOut,
         container.removeEventListener('wheel', handleScroll, options);
       };
     }
-  }, []);
+  }, [zoom]); // Added zoom to dependencies since we use it in the handler
 
   return (
     <div 
