@@ -9,16 +9,17 @@ function DrawTool({ pan, zoom, onDrawComplete }) {
     const svg = e.currentTarget.closest('svg');
     if (!svg) return null;
     
-    const point = svg.createSVGPoint();
-    point.x = e.clientX;
-    point.y = e.clientY;
+    const rect = svg.getBoundingClientRect();
     
-    // Convert screen coordinates to SVG coordinates
-    const ctm = svg.getScreenCTM();
-    if (!ctm) return null;
+    // Get click position relative to SVG viewport
+    const x = (e.clientX - rect.left);
+    const y = (e.clientY - rect.top);
     
-    const svgPoint = point.matrixTransform(ctm.inverse());
-    return svgPoint;
+    // Convert to artboard coordinates accounting for zoom and pan
+    return {
+      x: x / zoom,
+      y: y / zoom
+    };
   };
 
   const handleClick = (e) => {
@@ -67,10 +68,10 @@ function DrawTool({ pan, zoom, onDrawComplete }) {
           key={index}
           cx={point.x}
           cy={point.y}
-          r={NODE_RADIUS}
+          r={NODE_RADIUS / zoom}
           fill="white"
           stroke="black"
-          strokeWidth={1}
+          strokeWidth={1 / zoom}
           style={{ pointerEvents: 'none' }}
         />
       ))}
@@ -83,17 +84,17 @@ function DrawTool({ pan, zoom, onDrawComplete }) {
             x2={currentPoint.x}
             y2={currentPoint.y}
             stroke="black"
-            strokeWidth={1}
-            strokeDasharray="4"
+            strokeWidth={1 / zoom}
+            strokeDasharray={`${4 / zoom}`}
             style={{ pointerEvents: 'none' }}
           />
           <circle
             cx={currentPoint.x}
             cy={currentPoint.y}
-            r={NODE_RADIUS}
+            r={NODE_RADIUS / zoom}
             fill="white"
             stroke="black"
-            strokeWidth={1}
+            strokeWidth={1 / zoom}
             style={{ pointerEvents: 'none' }}
           />
         </>
