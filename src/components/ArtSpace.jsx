@@ -10,14 +10,15 @@ const ArtSpace = forwardRef(({
   onZoomIn, 
   onZoomOut, 
   onFitToView,
-  currentMode 
+  currentMode,
+  onModeChange 
 }, ref) => {
   const containerRef = useRef(null);
   const [pan, setPan] = useState({ x: 0, y: 0 });
   const [isSpacePressed, setIsSpacePressed] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [startPos, setStartPos] = useState({ x: 0, y: 0 });
-  const [lines, setLines] = useState([]);
+  const [paths, setPaths] = useState([]);
 
   // Handle spacebar press/release
   useEffect(() => {
@@ -178,10 +179,12 @@ const ArtSpace = forwardRef(({
 
   const handleDrawComplete = (points) => {
     if (points.length === 2) {
-      setLines(prev => [...prev, { 
-        start: points[0],
-        end: points[1]
+      setPaths(prev => [...prev, { 
+        points,
+        id: Date.now(), // Add unique ID for each path
+        selected: false
       }]);
+      onModeChange(MODES.SELECT);
     }
   };
 
@@ -222,17 +225,31 @@ const ArtSpace = forwardRef(({
           strokeWidth="1"
         />
         
-        {/* Render existing lines */}
-        {lines.map((line, index) => (
-          <line
-            key={index}
-            x1={line.start.x}
-            y1={line.start.y}
-            x2={line.end.x}
-            y2={line.end.y}
-            stroke="black"
-            strokeWidth={1}
-          />
+        {/* Render existing paths with points */}
+        {paths.map((path) => (
+          <g key={path.id}>
+            <line
+              x1={path.points[0].x}
+              y1={path.points[0].y}
+              x2={path.points[1].x}
+              y2={path.points[1].y}
+              stroke="black"
+              strokeWidth={1}
+              style={{ pointerEvents: 'none' }}
+            />
+            {path.points.map((point, pointIndex) => (
+              <circle
+                key={pointIndex}
+                cx={point.x}
+                cy={point.y}
+                r="4"
+                fill="white"
+                stroke="black"
+                strokeWidth={1}
+                style={{ cursor: currentMode === MODES.SELECT ? 'pointer' : 'default' }}
+              />
+            ))}
+          </g>
         ))}
         
         {/* Render DrawTool when in draw mode */}
