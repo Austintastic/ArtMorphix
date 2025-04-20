@@ -225,7 +225,7 @@ const ArtSpace = forwardRef(({
           strokeWidth="1"
         />
         
-        {/* Render existing paths with points */}
+        {/* Render existing paths - only lines, no points */}
         {paths.map((path) => (
           <g key={path.id}>
             <line
@@ -235,20 +235,7 @@ const ArtSpace = forwardRef(({
               y2={path.points[1].y}
               stroke="black"
               strokeWidth={1}
-              style={{ pointerEvents: 'none' }}
             />
-            {path.points.map((point, pointIndex) => (
-              <circle
-                key={pointIndex}
-                cx={point.x}
-                cy={point.y}
-                r="4"
-                fill="white"
-                stroke="black"
-                strokeWidth={1}
-                style={{ cursor: currentMode === MODES.SELECT ? 'pointer' : 'default' }}
-              />
-            ))}
           </g>
         ))}
         
