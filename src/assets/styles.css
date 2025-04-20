@@ -121,10 +121,24 @@ body {
     .properties-wrap label {
       display: block;
       margin-bottom: 10px;
+      font-size: 1em;
+      font-weight: 500;
+      font-family: inherit;
     }
+
     .properties-wrap input {
       margin-left: 5px;
       width: 60px;
+      padding: 0.4em 0.8em;
+      border: none;
+      border-radius: 4px;
+      font-size: 0.9em;
+      background-color: white;
+      color: #1a1a1a;
+    }
+
+    .properties-wrap input:focus {
+      outline: 2px solid #4a90e2;
     }
 
     .zoom-display {

@@ -13,7 +13,7 @@ function PropertiesPanel({ onUpdate, selected, artboardSize, setArtboardSize, zo
           <div>
             <h3>ArtBoard</h3>
             <label>
-              Width:
+              W
               <input
                 type="number"
                 name="width"
@@ -22,7 +22,7 @@ function PropertiesPanel({ onUpdate, selected, artboardSize, setArtboardSize, zo
               />
             </label>
             <label>
-              Height:
+              H
               <input
                 type="number"
                 name="height"
