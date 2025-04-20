@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import Toolbar from '../components/Toolbar.jsx';
 import ArtSpace from '../components/ArtSpace.jsx';
 import PropertiesPanel from '../components/PropertiesPanel.jsx';
+import { MODES } from '../utils/constants';
 import '../assets/styles.css';
 
 function AppPage() {
@@ -9,6 +10,7 @@ function AppPage() {
   const [artboardSize, setArtboardSize] = useState({ width: 800, height: 600 });
   const [selected, setSelected] = useState(null);
   const [zoom, setZoom] = useState(1);
+  const [currentMode, setCurrentMode] = useState(MODES.SELECT);
   const artSpaceRef = useRef(null);
 
   const handleSelectArtSpace = () => {
@@ -30,16 +32,18 @@ function AppPage() {
     }
   };
 
+  const handleModeChange = (mode) => {
+    setCurrentMode(mode);
+  };
+
   return (
     <div className="app-container">
       <div className="toolbar-wrap">
         <Toolbar
           onSelectArtSpace={handleSelectArtSpace}
           selected={selected}
-          onZoomIn={handleZoomIn}
-          onZoomOut={handleZoomOut}
-          onFitToView={handleFitToView}
-          zoom={zoom}
+          currentMode={currentMode}
+          onModeChange={handleModeChange}
         />
       </div>
       <div className="artspace-wrap">
@@ -51,6 +55,7 @@ function AppPage() {
           onZoomIn={handleZoomIn}
           onZoomOut={handleZoomOut}
           onFitToView={handleFitToView}
+          currentMode={currentMode}
         />
       </div>
       <div className="properties-wrap">

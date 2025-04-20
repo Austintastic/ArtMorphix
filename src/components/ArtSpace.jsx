@@ -1,12 +1,23 @@
 import React, { useState, useEffect, useRef, forwardRef, useImperativeHandle } from 'react';
+import { MODES } from '../utils/constants';
+import DrawTool from './DrawTool';
 import '../assets/styles.css';
 
-const ArtSpace = forwardRef(({ artboardSize, zoom, setZoom, onZoomIn, onZoomOut, onFitToView }, ref) => {
+const ArtSpace = forwardRef(({ 
+  artboardSize, 
+  zoom, 
+  setZoom, 
+  onZoomIn, 
+  onZoomOut, 
+  onFitToView,
+  currentMode 
+}, ref) => {
   const containerRef = useRef(null);
   const [pan, setPan] = useState({ x: 0, y: 0 });
   const [isSpacePressed, setIsSpacePressed] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [startPos, setStartPos] = useState({ x: 0, y: 0 });
+  const [lines, setLines] = useState([]);
 
   // Handle spacebar press/release
   useEffect(() => {
@@ -165,15 +176,28 @@ const ArtSpace = forwardRef(({ artboardSize, zoom, setZoom, onZoomIn, onZoomOut,
     }
   }, [zoom]); // Added zoom to dependencies since we use it in the handler
 
+  const handleDrawComplete = (points) => {
+    if (points.length === 2) {
+      setLines(prev => [...prev, { 
+        start: points[0],
+        end: points[1]
+      }]);
+    }
+  };
+
   return (
     <div 
       ref={containerRef}
       className="artspace"
-      onMouseDown={handleMouseDown}
-      onMouseMove={handleMouseMove}
-      onMouseUp={handleMouseUp}
-      onMouseLeave={handleMouseUp}
-      style={{ cursor: isSpacePressed ? 'grab' : 'default' }}
+      onMouseDown={isSpacePressed ? handleMouseDown : undefined}
+      onMouseMove={isSpacePressed ? handleMouseMove : undefined}
+      onMouseUp={isSpacePressed ? handleMouseUp : undefined}
+      onMouseLeave={isSpacePressed ? handleMouseUp : undefined}
+      style={{ 
+        cursor: isSpacePressed ? 'grab' : 
+               currentMode === MODES.DRAW ? 'crosshair' : 
+               'default' 
+      }}
     >
       <svg
         className="artboard"
@@ -183,7 +207,43 @@ const ArtSpace = forwardRef(({ artboardSize, zoom, setZoom, onZoomIn, onZoomOut,
           transform: `translate(calc(-50% + ${pan.x}px), calc(-50% + ${pan.y}px)) scale(${zoom})`,
           transformOrigin: 'center'
         }}
-      />
+        onMouseDown={e => !isSpacePressed && e.stopPropagation()}
+        onMouseMove={e => !isSpacePressed && e.stopPropagation()}
+        onMouseUp={e => !isSpacePressed && e.stopPropagation()}
+      >
+        {/* Background rect to show artboard bounds */}
+        <rect
+          x="0"
+          y="0"
+          width={artboardSize.width}
+          height={artboardSize.height}
+          fill="white"
+          stroke="black"
+          strokeWidth="1"
+        />
+        
+        {/* Render existing lines */}
+        {lines.map((line, index) => (
+          <line
+            key={index}
+            x1={line.start.x}
+            y1={line.start.y}
+            x2={line.end.x}
+            y2={line.end.y}
+            stroke="black"
+            strokeWidth={1}
+          />
+        ))}
+        
+        {/* Render DrawTool when in draw mode */}
+        {currentMode === MODES.DRAW && (
+          <DrawTool
+            pan={pan}
+            zoom={zoom}
+            onDrawComplete={handleDrawComplete}
+          />
+        )}
+      </svg>
     </div>
   );
 });
