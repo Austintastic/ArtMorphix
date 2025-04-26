@@ -188,6 +188,18 @@ const ArtSpace = forwardRef(({
     }
   };
 
+  // Add effect to deselect points when tool changes
+  useEffect(() => {
+    // Deselect all points when changing tools
+    setPaths(prevPaths => prevPaths.map(path => ({
+      ...path,
+      points: path.points.map(point => ({
+        ...point,
+        selected: false
+      }))
+    })));
+  }, [currentMode]);
+
   return (
     <div 
       ref={containerRef}
