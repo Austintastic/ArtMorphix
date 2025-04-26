@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, forwardRef, useImperativeHandle } from 'react';
 import { MODES } from '../utils/constants';
 import DrawTool from './DrawTool';
+import SelectTool from './SelectTool';
 import '../assets/styles.css';
 
 const ArtSpace = forwardRef(({ 
@@ -180,9 +181,8 @@ const ArtSpace = forwardRef(({
   const handleDrawComplete = (points) => {
     if (points.length === 2) {
       setPaths(prev => [...prev, { 
-        points,
-        id: Date.now(), // Add unique ID for each path
-        selected: false
+        points: points.map(p => ({ ...p, selected: false })),
+        id: Date.now(),
       }]);
       onModeChange(MODES.SELECT);
     }
@@ -225,19 +225,29 @@ const ArtSpace = forwardRef(({
           strokeWidth="1"
         />
         
-        {/* Render existing paths - only lines, no points */}
-        {paths.map((path) => (
-          <g key={path.id}>
-            <line
-              x1={path.points[0].x}
-              y1={path.points[0].y}
-              x2={path.points[1].x}
-              y2={path.points[1].y}
-              stroke="black"
-              strokeWidth={1}
-            />
+        {/* Always render paths */}
+        {currentMode === MODES.SELECT ? (
+          <SelectTool
+            paths={paths}
+            onUpdatePaths={setPaths}
+            zoom={zoom}
+          />
+        ) : (
+          /* Render just the lines without points in draw mode */
+          <g>
+            {paths.map((path) => (
+              <line
+                key={path.id}
+                x1={path.points[0].x}
+                y1={path.points[0].y}
+                x2={path.points[1].x}
+                y2={path.points[1].y}
+                stroke="black"
+                strokeWidth={1}
+              />
+            ))}
           </g>
-        ))}
+        )}
         
         {/* Render DrawTool when in draw mode */}
         {currentMode === MODES.DRAW && (
