@@ -11,6 +11,7 @@ function AppPage() {
   const [selected, setSelected] = useState(null);
   const [zoom, setZoom] = useState(1);
   const [currentMode, setCurrentMode] = useState(MODES.SELECT);
+  const [showRulers, setShowRulers] = useState(false);
   const artSpaceRef = useRef(null);
 
   const handleSelectArtSpace = () => {
@@ -33,6 +34,10 @@ function AppPage() {
   };
 
   const handleModeChange = (mode) => {
+    if (mode === MODES.RULERS) {
+      setShowRulers(prev => !prev);
+      return;
+    }
     setCurrentMode(mode);
   };
 
@@ -59,6 +64,7 @@ function AppPage() {
           selected={selected}
           currentMode={currentMode}
           onModeChange={handleModeChange}
+          showRulers={showRulers}
         />
       </div>
       <div className="artspace-wrap">
@@ -72,6 +78,7 @@ function AppPage() {
           onFitToView={handleFitToView}
           currentMode={currentMode}
           onModeChange={handleModeChange}
+          showRulers={showRulers}
         />
       </div>
       <div className="properties-wrap">

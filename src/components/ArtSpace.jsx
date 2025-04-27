@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, forwardRef, useImperativeHandle } f
 import { MODES } from '../utils/constants';
 import DrawTool from './DrawTool';
 import SelectTool from './SelectTool';
+import RulersTool from './RulersTool';
 import '../assets/styles.css';
 
 const ArtSpace = forwardRef(({ 
@@ -12,7 +13,8 @@ const ArtSpace = forwardRef(({
   onZoomOut, 
   onFitToView,
   currentMode,
-  onModeChange 
+  onModeChange,
+  showRulers 
 }, ref) => {
   const containerRef = useRef(null);
   const [pan, setPan] = useState({ x: 0, y: 0 });
@@ -253,6 +255,14 @@ const ArtSpace = forwardRef(({
           stroke="black"
           strokeWidth="1"
         />
+        
+        {/* Render RulersTool when showRulers is true */}
+        {showRulers && (
+          <RulersTool
+            artboardSize={artboardSize}
+            zoom={zoom}
+          />
+        )}
         
         {/* Always render paths */}
         {currentMode === MODES.SELECT ? (

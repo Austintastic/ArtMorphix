@@ -1,7 +1,7 @@
 import React from 'react';
 import { MODES, MODE_ICONS } from '../utils/constants';
 
-function Toolbar({ onSelectArtSpace, selected, currentMode, onModeChange }) {
+function Toolbar({ onSelectArtSpace, selected, currentMode, onModeChange, showRulers }) {
   return (
     <div className="toolbar">
       <button
@@ -15,6 +15,12 @@ function Toolbar({ onSelectArtSpace, selected, currentMode, onModeChange }) {
         onClick={() => onModeChange(MODES.DRAW)}
       >
         {MODE_ICONS[MODES.DRAW]} Draw
+      </button>
+      <button
+        className={showRulers ? 'active' : ''}
+        onClick={() => onModeChange(MODES.RULERS)}
+      >
+        {MODE_ICONS[MODES.RULERS]} Rulers
       </button>
       <button
         className={selected === 'artspace' ? 'active' : ''}

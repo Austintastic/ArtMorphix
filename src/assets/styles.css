@@ -38,6 +38,24 @@ body {
   border-color: #1a1a1a;
 }
  
+  /* Ruler styles */
+  .rulers {
+    pointer-events: none;
+  }
+
+  .ruler text {
+    font-family: monospace;
+    dominant-baseline: middle;
+  }
+
+  .ruler.horizontal {
+    transform: translate(25px, 0);
+  }
+
+  .ruler.vertical {
+    transform: translate(0, 25px);
+  }
+
   /* Editor page styles */
   .app-container {
     display: flex;
