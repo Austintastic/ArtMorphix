@@ -21,6 +21,22 @@ const ArtSpace = forwardRef(({
   const [startPos, setStartPos] = useState({ x: 0, y: 0 });
   const [paths, setPaths] = useState([]);
 
+  const handleArtSpaceClick = (e) => {
+    // Only handle clicks in SELECT mode and when not panning
+    if (currentMode === MODES.SELECT && !isSpacePressed && !isDragging) {
+      // If the click is directly on the artspace (not on the SVG), deselect all points
+      if (e.target.classList.contains('artspace')) {
+        setPaths(prevPaths => prevPaths.map(path => ({
+          ...path,
+          points: path.points.map(point => ({
+            ...point,
+            selected: false
+          }))
+        })));
+      }
+    }
+  };
+
   // Handle spacebar press/release
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -204,6 +220,7 @@ const ArtSpace = forwardRef(({
     <div 
       ref={containerRef}
       className="artspace"
+      onClick={handleArtSpaceClick}
       onMouseDown={isSpacePressed ? handleMouseDown : undefined}
       onMouseMove={isSpacePressed ? handleMouseMove : undefined}
       onMouseUp={isSpacePressed ? handleMouseUp : undefined}
