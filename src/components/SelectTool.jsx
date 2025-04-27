@@ -71,15 +71,36 @@ function SelectTool({ paths, onUpdatePaths, zoom }) {
       const minY = Math.min(selectionBox.startY, selectionBox.endY);
       const maxY = Math.max(selectionBox.startY, selectionBox.endY);
 
-      // Update point selection based on box
       onUpdatePaths(paths.map(path => ({
         ...path,
-        points: path.points.map(point => ({
-          ...point,
-          selected: e.shiftKey 
-            ? (point.selected || (point.x >= minX && point.x <= maxX && point.y >= minY && point.y <= maxY))
-            : (point.x >= minX && point.x <= maxX && point.y >= minY && point.y <= maxY)
-        }))
+        points: path.points.map((point, idx) => {
+          const isInBox = point.x >= minX && point.x <= maxX && point.y >= minY && point.y <= maxY;
+
+          if (!isInBox) {
+            // Points outside the box maintain their state if shift is pressed
+            return {
+              ...point,
+              selected: e.shiftKey ? point.selected : false
+            };
+          }
+
+          // For points in the box:
+          if (e.shiftKey) {
+            // If shift is pressed:
+            // - If point was selected, deselect it
+            // - If point was not selected, select it
+            return {
+              ...point,
+              selected: !point.selected
+            };
+          } else {
+            // If shift is not pressed, select all points in box
+            return {
+              ...point,
+              selected: true
+            };
+          }
+        })
       })));
     }
     setIsDragging(false);
